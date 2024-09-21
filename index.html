@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="en">
+<head>
+	<title>Mod The Coaster</title>
+	<link rel="shortcut icon" type="image/webp" href="img/icon.webp">
+	<link rel="stylesheet" href="style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<meta name="description" content="Groove Coaster modding utilities. Can pack AAR files, convert ASN audio, and convert AC jackets to SW.">
+	<meta name="keywords" content="groove coaster arcade ac steam st switch sw wai modding tools aar asn">
+</head>
+
+<body>
+	<!-- === LINK HEADER === -->
+	<p class="link-header">
+		<span>Tools</span> -
+		<!--<a href="https://github.com/lemocha7/Mod-The-Coaster/wiki" target="_blank">Guide</a>-->
+		<span style="color: var(--dark-grey); cursor: help" title="Not ready yet">Guide</span>
+	</p>
+
+	<!-- === WEBSITE HEADER === -->
+	<div class="website-header">
+		<h1>
+			Mod The Coaster
+			<img width="32" src="img/icon.webp" onmouseenter="this.src = 'img/icon2.webp'" onmouseleave="this.src = 'img/icon.webp'">
+		</h1>
+		<p>Groove Coaster modding utilities</p>
+	</div>
+
+	<!-- === TAB BAR === -->
+	<div id="idTabContainer">
+		<div class="tag" style="--accent: rgb(125, 60, 60); --width: 130px">
+			<button onclick="tab.open(1)" title="Convert AC jackets to SW jackets">Jacket Convert</button>
+			<span>Switch</span>
+		</div>
+
+		<div class="tag" style="--accent: rgb(60, 100, 100); --width: 160px">
+			<button onclick="tab.open(5)" title="Pack .aar archives">AAR Zip</button>
+			<button onclick="tab.open(4)" title="Convert .asn audio to .ogg">ASN Snip</button>
+			<span>Steam</span>
+		</div>
+
+		<button onclick="tab.open(0)" title="">About</button>
+	</div>
+
+	<!-- === CONTENT === -->
+	<div class="main">
+		<div id="idTabJacketConv">
+			<header>
+				<h2>Jacket Converter</h2>
+				Converts AC jackets to SW jackets
+			</header>
+			<hr>
+
+			<div class="file-drop" onclick="jcFile.click()" ondragover="fileDrag(event, this)" ondragleave="fileDragLeave(this)" ondrop="fileDrop(event, this, jacketConv)">
+				<p></p><small>recommended: images</small>
+			</div>
+			<input id="jcFile" type="file" accept="image/*" multiple onchange="jacketConv.loadFile(this.files)">
+			<br>
+
+			<input id="jcSetStretch" type="checkbox" checked onchange="jacketConv.master()">
+			<label for="jcSetStretch">Stretch image?</label>
+			<br>
+			
+			<label for="jcACVer">AC Version</label>
+			<select id="jcACVer" onchange="jacketConv.master()">
+				<option value="AC2" selected>AC2</option>
+				<option value="AC4">AC4</option>
+			</select>
+			<br>
+			<br>
+
+			<button onclick="jacketConv.canvas.toBlob(x => simFile.download(x, simFile.fileName, 'image/png'))">Download</button>
+			<hr>
+
+			<canvas id="jcCanvasEdit"></canvas>
+			<canvas id="jcCanvas" style="display: none"></canvas>
+		</div>
+
+		<div id="idTabASN">
+			<header>
+				<h2>ASN Snip</h2>
+				Converts <code>.asn</code> audio to <code>.ogg</code> by trimming header.
+			</header>
+			<hr>
+
+			<span class="file-types"><code>.asn</code> ⟹ <code>.ogg</code></span>
+
+			<div class="file-drop" onclick="asnFile.click()" ondragover="fileDrag(event, this)" ondragleave="fileDragLeave(this)" ondrop="fileDrop(event, this, asn, true)">
+				<p></p><small>recommended: .asn</small>
+			</div>
+			<input id="asnFile" type="file" accept=".asn" multiple onchange="asn.loadFile(this.files)">
+			<br>
+			<br>
+
+			<button onclick="simFile.download(...asn.file)">Download</button>
+
+			<hr>
+			Files imported:
+			<br>
+			<textarea id="asnFileList" cols="30" style="resize: vertical" readonly></textarea>
+			<br>
+			<br>
+			
+			<textarea id="asnHexIn" rows="3" cols="45" readonly></textarea>
+			<textarea id="asnTxtIn" rows="3" cols="45" readonly></textarea>
+			<br>
+
+			<textarea id="asnHexOut" rows="3" cols="45" readonly></textarea>
+			<textarea id="asnTxtOut" rows="3" cols="45" readonly></textarea>
+		</div>
+
+		<div id="idTabAARZip">
+			<header>
+				<h2>AAR Zip</h2>
+				Packs <code>.aar</code> archives
+			</header>
+			<hr>
+
+			<span class="file-types"><code>.*</code> ⟹ <code>.aar</code></span>
+
+			<div class="file-drop" onclick="aarFileZip.click()" ondragover="fileDrag(event, this)" ondragleave="fileDragLeave(this)" ondrop="fileDrop(event, this, aarZip)">
+				<p></p><small>recommended: .dat, .ogg, .asn</small>
+			</div>
+			<input id="aarFileZip" type="file" accept=".dat, .ogg, .oga, .asn" multiple onchange="aarZip.loadFile(this.files)">
+			<br>
+
+			<label for="aarType">AAR Type</label>
+			<select id="aarType">
+				<option value="Stage" selected>Stage</option>
+				<option value="Bgm">Bgm</option>
+			</select>
+			<br>
+
+			<label for="aarID" title="Song ID of the song overwriting. E.g. if replacing Invader Disco [28] with Music Plot Type X [943], set ID to 28.">Song ID</label>
+			<input id="aarID" type="number" min="1" max="999">
+			<br>
+			<br>
+
+			<button onclick="simFile.download(...aarZip.file);">Download</button>
+			<hr>
+
+			Files imported:
+			<br>
+			<textarea id="aarFileList" cols="30" style="resize: vertical" readonly></textarea>
+			<br>
+			<br>
+
+			<textarea id="aarHex" rows="3" cols="45" readonly></textarea>
+			<textarea id="aarTxt" rows="3" cols="45" readonly></textarea>
+		</div>
+
+
+		<div id="idTabAbout">
+			<header>
+				<h2>About</h2>
+			</header>
+			<hr>
+
+			<b>Mod The Coaster</b> <a href="https://github.com/lemocha7/Mod-The-Coaster/releases/tag/v1.0">v1.0</a>
+			<br>
+
+			Groove Coaster modding utilities.
+			<br>
+			<br>
+
+			Using:
+			<a href="https://stuk.github.io/jszip/">JSZip</a> v3.10.1
+			<br>
+
+			♡ <a href="https://lemocha7.github.io">lemocha</a> 2024
+			<br>
+		</div>
+	</div>
+</body>
+
+<!-- libraries used -->
+<script src="https://lemocha7.github.io/lib/simFile-2024.2.19.js"></script>
+<script src="https://stuk.github.io/jszip/dist/jszip.js"></script>
+
+<!-- each tab has own JS file with functions -->
+<script src="script.js"></script>
+<script src="jacketConv.js"></script>
+<script src="asn.js"></script>
+<script src="aarZip.js"></script>
+</html>
+
+
+
+<!-- lemocha - lemocha7.github.io -->

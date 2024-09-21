@@ -1,0 +1,218 @@
+@import url(https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap);
+:root
+{
+	--white: #EEE;
+	--grey: #BBB;
+	--black: rgb(0,0,4);
+	--dark-grey: rgb(120,120,130);
+}
+
+
+/* ===================== */
+/* === BASE ELEMENTS === */
+/* ===================== */
+body, button
+{
+	font-family: "Lexend Deca", Arial, sans-serif;
+	font-weight: 400;
+	line-height: 1.3;
+	font-size: 12pt;
+	text-align: center;
+}
+button
+{
+	border: 2px solid var(--dark-grey);
+	background: white;
+	border-radius: 4px;
+
+	cursor: pointer;
+	transition-duration: .1s;
+}
+button:active { background-color: var(--white); }
+button[disabled], input[readonly], textarea[readonly] { background-color: var(--white); }
+input, select, textarea
+{
+	font-family: monospace;
+	border: 2px solid var(--dark-grey);
+	border-radius: 8px;
+}
+input[type=file] { display: none; }
+input[type=checkbox], select { cursor: pointer; }
+textarea { resize: none; }
+input, select { text-align: left; font-size: 11pt; }
+
+html { height: 100%; }
+body
+{
+	height: 100%;
+	user-select: none;
+	margin: 0;
+	color: var(--white); background-color: var(--black);
+}
+h1 { font-size: 24pt; }
+h2 { line-height: 0.8; }
+img { image-rendering: pixelated; user-select: none !important; }
+
+br { user-select: none; }
+header, #idTabAbout { user-select: text; }
+
+
+
+/* =============== */
+/* === CONTENT === */
+/* =============== */
+.main
+{
+	height: -webkit-fill-available;
+	color: black; background-color: var(--white);
+	padding: 16px 0;
+}
+.main > div { display: none; }
+div.selected { display: block !important; text-align: -webkit-center; }
+
+.layout
+{
+	display: flex;
+	padding: 4px;
+	justify-content: space-between;
+}
+.layout-row { text-align: left; }
+.layout > div
+{
+	width: 100%;
+	padding: 4px 0;
+}
+.layout input { margin-left: -2px; }
+.layout [type=number] { width: 40px; }
+.layout div:first-child { border-right: 2px solid black; }
+
+.file-types
+{
+	position: absolute;
+	left: 12px; top: 230px;
+}
+
+label[title]
+{
+	text-decoration: underline dotted black 1px;
+	cursor: help;
+}
+
+
+
+/* ================= */
+/* === FILE AREA === */
+/* ================= */
+.file-drop
+{
+	display: inline-flex;
+	width: 35%; height: 80px;
+	max-width: 400px;
+	margin: 16px 0;
+
+	flex-direction: column;
+	justify-content: center;
+	cursor: pointer;
+
+	background-color: white;
+	border: 2px dashed var(--dark-grey);
+	border-radius: 20px;
+	transition-duration: .1s;
+}
+.file-drop small { font-size: 9pt; }
+.file-drop > * { pointer-events: none; margin: 0; }
+.file-drop p:empty::before { content: "drag files here"; }
+
+.file-drop:active { background-color: var(--white); }
+.file-drop.drag { background-color: rgb(200,200,200); }
+
+
+
+/* ============ */
+/* === TABS === */
+/* ============ */
+#idTabContainer
+{
+	display: inline-flex !important;
+	width: 100%; height: 70px;
+	align-items: flex-end;
+
+	overflow: scroll hidden;
+	scrollbar-width: none;
+	text-wrap: nowrap;
+
+	background-color: transparent;
+
+	text-align: left;
+}
+#idTabContainer button
+{
+	height: 34px;
+	vertical-align: bottom;
+
+	background-color: var(--grey);
+	border: 0;
+	border-radius: 0;
+	
+	transition-duration: .04s;
+}
+#idTabContainer button.selected
+{
+	height: 44px;
+	background-color: var(--white);
+}
+#idTabContainer button:active
+{
+	filter: brightness(90%);
+	height: 30px;
+}
+#idTabContainer button.selected:active { height: 40px !important; }
+
+.tag
+{
+	display: flex;
+	width: var(--width); height: 38px;
+	align-items: flex-end;
+
+	background-color: var(--accent);
+	pointer-events: none;
+}
+.tag span
+{
+	position: relative;
+	top: -32px; right: var(--width);
+	padding: 2px 4px 4px 4px;
+
+	background-color: var(--accent);
+	font-size: 10pt;
+	z-index: -1;
+}
+.tag button { pointer-events: auto; }
+
+/* move tab text up if first tab being open would cover it up */
+.tag:has(button:nth-of-type(1).selected) > span { top: -40px; }
+
+
+
+/* ====================== */
+/* === WEBSITE HEADER === */
+/* ====================== */
+.website-header
+{
+	padding-bottom: 20px;
+	user-select: text;
+}
+.website-header h1 { margin-bottom: 0; }
+.website-header p { margin-top: 0; }
+.link-header
+{
+	padding: 8px 0 0 8px;
+	margin: 0;
+
+	text-align: left;
+}
+.link-header a { color: rgb(130, 200, 210); }
+
+
+
+/* lemocha - lemocha7.github.io */
