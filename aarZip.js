@@ -65,21 +65,24 @@ const aarZip =
 			this.extra = false;
 			const shotList = [];
 
-			// if ID is undefined, 0, or negative
-			if (Number(aarID.value) < 1)
-			{
-				alert("Hey! Song ID is invalid. Set the ID to the song you're replacing in the base game.");
-
-				aarID.value = "";
-				return;
-			}
 			// cap ID at 999
 			if (Number(aarID.value) > 999)
 			{
 				aarID.value = 999;
 			}
+			// if ID is undefined, 0, or negative
+			if (Number(aarID.value) < 1)
+			{
+				if (!aarDLC.checked)
+				{
+					alert("Hey! Song ID is invalid. Set the ID to the song you're replacing in the base game.");
+
+					aarID.value = "";
+					return;
+				}
+			}
 			// if song ID not between 21 and 764 (min / max used by ST and its DLC)
-			if (Number(aarID.value) < 20 || Number(aarID.value) > 764)
+			else if (Number(aarID.value) < 20 || Number(aarID.value) > 764)
 			{
 				if (!confirm("Just letting you know, the song ID you entered (" + Number(aarID.value) + ") is out of range. ST only uses 21 - 764. Remember! The song ID should be set to the song you're replacing in the base game, NOT the song you're adding.\n\nContinue anyways?"))
 				{
@@ -115,22 +118,31 @@ const aarZip =
 						switch (x)
 						{
 							case 1:  // BGM
-								//if (Number(aarID.value) !== Number(files[i].name.slice(6, 9)))
-								//{
-								//	if (confirm("Hey, are you sure the song ID isn't " + Number(files[i].name.slice(6, 9)) + "? I can set it to that if you want."))
-								//	{
-								//		aarID.value = Number(files[i].name.slice(6, 9));
-								//	}
-								//}
-								if (Number(aarID.value) === Number(files[i].name.slice(6, 9)))
+								if (aarID.value === files[i].name.slice(6, 9))
 								{
-									if (!confirm("Hey! The song ID should be set to the song you're replacing in the base game, NOT the song you're adding (so, not " + Number(files[i].name.slice(6, 9)) + ").\n\nContinue anyways?"))
+									if (!aarDLC.checked)
 									{
-										return;
+										if (!confirm("Hey! The song ID should be set to the song you're replacing in the base game, NOT the song you're adding (so, not " + files[i].name.slice(6, 9) + ").\n\nContinue anyways?"))
+										{
+											return;
+										}
+									}
+								}
+								else
+								{
+									if (aarDLC.checked)
+									{
+										if (confirm("Hey! Since the song is a DLC song, the song ID should match the song.\n\nShall I set it to " + files[i].name.slice(6, 9) + "?"))
+										{
+											aarID.value = files[i].name.slice(6, 9);
+										}
 									}
 								}
 								break;
-
+								
+							// ex.dat
+							case 14: this.extra = true; break;
+							
 							case 17: shotList.push(["e",   i]); break;
 							case 18: shotList.push(["ne",  i]); break;
 							case 19: shotList.push(["n",   i]); break;
@@ -214,14 +226,14 @@ const aarZip =
 		}
 		else
 		{
-			switch (type)
-			{
-				case "Bgm":
-					headerID = [0, 0];
+			headerID = [0, 0];
 
-					fileType = [0,1,2,3,4,5,6];
-					hex.push(0x00,0x00,0x60,0x00,0x06,0x00,0x60);
-					break;
+			fileType = [0,1,2,3,4,5,6];
+			hex.push(0x00,0x00,0x60,0x00,0x06,0x00,0x60);
+			
+			for (let i = 0; i < filesAmount; i++)
+			{
+				fileReadOrder.push(i);
 			}
 		}
 
@@ -253,10 +265,27 @@ const aarZip =
 				// convert file to viewer, then store viewer to array
 				fileViewer.push(new Uint8Array(await simFile.read(files[fileReadOrder[i]], "readAsArrayBuffer")));
 
+				// if file is SHOT audio, replace to muted file if option is checked
+				if (aarMuteSHOT.checked && simFile.fileName.endsWith("_SHOT"))
+				{
+					fileViewer[i] = await fetch("EMPTY.ogg").then(x => x.arrayBuffer()).then(x => new Uint8Array(x));
+				}
+
+
 				// copy ID from header
 				// byte 1 of ID
 				// e.g. ID is 90 0C 50, type is 3, so first byte becomes 93
-				hex.push(headerID[0] + fileType[i], headerID[1], 0x50);
+				hex.push(headerID[0] + fileType[i], headerID[1]);
+
+				if (type === "Stage")
+				{
+					hex.push(0x50);
+				}
+				else
+				{
+					hex.push(0x60);
+				}
+
 				switch (simFile.fileExtension)
 				{
 					// chart files use 0x00
@@ -328,31 +357,42 @@ const aarZip =
 		aarHex.value = "";
 		aarTxt.value = "";
 		const viewer = new Uint8Array(hex);
-		for (let i = 0; i < 48; i++)
+		if (viewer.length > 48)
 		{
-			if (16 > viewer[i])
+			for (let i = 0; i < 48; i++)
 			{
-				aarHex.value += "0";
-			}
-	
-			// DECIMAL -> ASCII
-			aarTxt.value += String.fromCharCode(viewer[i]);
-			aarTxt.value += " ";
-	
-			// DECIMAL -> HEX
-			aarHex.value += viewer[i].toString(16).toUpperCase();
-			aarHex.value += " ";
-	
-			if (i === 15 || i === 31)
-			{
-				aarTxt.value += "\n";
-				aarHex.value += "\n";
+				if (16 > viewer[i])
+				{
+					aarHex.value += "0";
+				}
+		
+				// DECIMAL -> ASCII
+				aarTxt.value += String.fromCharCode(viewer[i]);
+				aarTxt.value += " ";
+		
+				// DECIMAL -> HEX
+				aarHex.value += viewer[i].toString(16).toUpperCase();
+				aarHex.value += " ";
+		
+				if (i === 15 || i === 31)
+				{
+					aarTxt.value += "\n";
+					aarHex.value += "\n";
+				}
 			}
 		}
 		
 
 		// generate file name and download file
-		this.file = [viewer, "Stage00" + "0".repeat(3 - aarID.value.length) + aarID.value + ".aar", "application/octet-stream"];
+		this.file = [viewer, undefined, "application/octet-stream"];
+		if (type === "Stage")
+		{
+			this.file[1] = "Stage00" + "0".repeat(3 - aarID.value.length) + aarID.value + ".aar";
+		}
+		else
+		{
+			this.file[1] = "Bgm.aar";
+		}
 		simFile.download(...this.file);
 	}
 };

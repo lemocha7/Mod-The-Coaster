@@ -40,7 +40,7 @@
 			<span>Steam</span>
 		</div>
 
-		<button onclick="tab.open(0)" title="">About</button>
+		<button onclick="tab.open(0)" title="What is Mod The Coaster?">About</button>
 	</div>
 
 	<!-- === CONTENT === -->
@@ -93,7 +93,7 @@
 			<br>
 			<br>
 
-			<button onclick="simFile.download(...asn.file)">Download</button>
+			<button onclick="downloadIfValid(asn.file)">Download</button>
 
 			<hr>
 			Files imported:
@@ -132,12 +132,20 @@
 			</select>
 			<br>
 
-			<label for="aarID" title="Song ID of the song overwriting. E.g. if replacing Invader Disco [28] with Music Plot Type X [943], set ID to 28.">Song ID</label>
+			<label for="aarID" title="Song ID of the song overwriting. E.g. if replacing No Way Out [93] with 21124 [321], set ID to 93.">Song ID</label>
 			<input id="aarID" type="number" min="1" max="999">
+			<br>
+
+			<label for="aarMuteSHOT" title="SHOT is an extra audio layer that gets muted when missing notes. Enabling this will empty out all inputted SHOT audio files in the AAR.">Mute SHOT</label>
+			<input id="aarMuteSHOT" type="checkbox">
+			<br>
+			
+			<label for="aarDLC" title="Changes song ID safeguards to better match DLC song IDs.">DLC</label>
+			<input id="aarDLC" type="checkbox">
 			<br>
 			<br>
 
-			<button onclick="simFile.download(...aarZip.file);">Download</button>
+			<button onclick="downloadIfValid(aarZip.file)">Download</button>
 			<hr>
 
 			Files imported:
@@ -157,7 +165,7 @@
 			</header>
 			<hr>
 
-			<b>Mod The Coaster</b> <a href="https://github.com/lemocha7/Mod-The-Coaster/releases/tag/v1.0">v1.0</a>
+			<b>Mod The Coaster</b> <a href="https://github.com/lemocha7/Mod-The-Coaster/releases/tag/v1.0.1">v1.0.1</a>
 			<br>
 
 			Groove Coaster modding utilities.

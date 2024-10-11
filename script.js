@@ -1,8 +1,8 @@
 "use strict";
 
-// =================
-// == TAB MANAGER ==
-// =================
+// ===================
+// === TAB MANAGER ===
+// ===================
 // DOM of all tab buttons
 const tabButtons = idTabContainer.getElementsByTagName("button");
 const tab =
@@ -40,13 +40,14 @@ const tab =
 			this.buttons[this.list[this.active]].classList.remove("selected");
 
 			this.active = id;
+			localStorage.setItem("mtc/last-tab", id);
 		}
 	}
 };
-// select tab ID in tab.active
-tab.DOM[tab.list[tab.active]].classList.add("selected");
-tab.buttons[tab.list[tab.active]].classList.add("selected");
 
+// ========================
+// === JACKET CONSTANTS ===
+// ========================
 // position of jacket elements
 const jacket =
 {
@@ -91,6 +92,10 @@ const jacket =
 	}
 };
 
+
+// ======================
+// === MISC FUNCTIONS ===
+// ======================
 // convert DECIMAL to HEX, flip order of byte chunks (e.g. 12 34 56 ==> 56 34 12)
 //	input [int]:			decimal to convert
 //	l [int]:					how many bytes HEX should be
@@ -115,11 +120,35 @@ function hexReverseChunk(input, l, hex)
 		hex.push(parseInt(str[i + 1] + str[i], 16));
 	}
 }
+function downloadIfValid(file)
+{
+	if (file[0] !== undefined)
+	{
+		simFile.download(...file);
+	}
+}
 
 
-// ===============
-// == FILE DRAG ==
-// ===============
+// =====================
+// === LOCAL STORAGE ===
+// =====================
+// if local storage is enabled, key in local storage is not empty, and key is not 1
+if (navigator.cookieEnabled && localStorage.getItem("mtc/last-tab") !== null && localStorage.getItem("mtc/last-tab") !== "1")
+{
+	// open the tab ID that was set in local storage
+	tab.open(Number(localStorage.getItem("mtc/last-tab")));
+}
+else
+{
+	// select first tab to be active
+	tab.DOM[tab.list[tab.active]].classList.add("selected");
+	tab.buttons[tab.list[tab.active]].classList.add("selected");
+}
+
+
+// =================
+// === FILE DRAG ===
+// =================
 // tied to "ondragover" event. set drop visuals, add "drag" class
 //	event [event]:		drag / drop event
 //	dom [dom]:				DOM of file-area
@@ -135,7 +164,7 @@ function fileDrag(event, dom)
 //	dom [dom]:				DOM of file-area
 function fileDragLeave(dom) { dom.classList.remove("drag"); }
 
-// tied to "ondrop" event. remove drop visuals, run 
+// tied to "ondrop" event. remove drop visuals, run loadFile() on specified object
 //	event [event]:		drag / drop event
 //	dom [dom]:				DOM of file-area
 //	dest [obj]:				loadFile() under whichever object specified (e.g. "aarZip")
