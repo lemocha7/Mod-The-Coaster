@@ -10,12 +10,12 @@
 	<meta name="keywords" content="groove coaster arcade ac steam st switch sw wai modding tools aar asn">
 </head>
 
-<body>
+<body onbeforeunload="if (!tune.saved) { return false; }">
 	<!-- === LINK HEADER === -->
 	<p class="link-header">
-		<span>Tools</span> -
-		<!--<a href="https://github.com/lemocha7/Mod-The-Coaster/wiki" target="_blank">Guide</a>-->
-		<span style="color: var(--dark-grey); cursor: help" title="Not ready yet">Guide</span>
+		<span>Tools</span> ·
+		<a href="https://github.com/lemocha7/Mod-The-Coaster/wiki" target="_blank">Guide</a> ·
+		<a href="https://docs.google.com/spreadsheets/d/1Ia1Pj9P0OHSlMKTNB8HuUs1qk7ODr7MGuCyzzunbAZk/edit?usp=sharing" target="_blank">Song List</a>
 	</p>
 
 	<!-- === WEBSITE HEADER === -->
@@ -29,41 +29,180 @@
 
 	<!-- === TAB BAR === -->
 	<div id="idTabContainer">
-		<div class="tag" style="--accent: rgb(125, 60, 60); --width: 130px">
-			<button onclick="tab.open(1)" title="Convert AC jackets to SW jackets">Jacket Convert</button>
-			<span>Switch</span>
-		</div>
-
-		<div class="tag" style="--accent: rgb(60, 100, 100); --width: 160px">
-			<button onclick="tab.open(5)" title="Pack .aar archives">AAR Zip</button>
-			<button onclick="tab.open(4)" title="Convert .asn audio to .ogg">ASN Snip</button>
+		<div class="tag" style="--accent: rgb(60, 100, 100); --width: 253px">
+			<button onclick="tabs.open('tab', 0)" title="Pack .aar archives">AAR Zip</button>
+			<button onclick="tabs.open('tab', 1)" title="Re-assign difficulties of existing songs">Table Tune</button>
+			<button onclick="tabs.open('tab', 2)" title="Convert .asn audio to .ogg">ASN Snip</button>
 			<span>Steam</span>
 		</div>
 
-		<button onclick="tab.open(0)" title="What is Mod The Coaster?">About</button>
+		<div class="tag" style="--accent: rgb(125, 60, 60); --width: 130px">
+			<button onclick="tabs.open('tab', 3)" title="Convert AC jackets to SW jackets">Jacket Convert</button>
+			<span>Switch</span>
+		</div>
+
+		<button onclick="tabs.open('tab', 4)" title="What is Mod The Coaster?">About</button>
 	</div>
 
 	<!-- === CONTENT === -->
-	<div class="main">
-		<div id="idTabJacketConv">
+	<div id="idMainContainer">
+
+		<!-- =============== -->
+		<!-- === AAR ZIP === -->
+		<!-- =============== -->
+		<div>
+			<header>
+				<h2>AAR Zip</h2>
+				Packs <code>.aar</code> archives
+			</header>
+			<hr>
+
+			<span class="file-types"><code>.*</code> ⟹ <code>.aar</code></span>
+
+			<div class="file-drop" onclick="aarFileZip.click()" ondragover="drag.drag(event, this)" ondragleave="drag.leave(this)" ondrop="drag.drop(event, this, aarZip, 'loadFile')">
+				<p></p><small>recommended: .dat, .ogg, .asn</small>
+			</div>
+			<input id="aarFileZip" type="file" accept=".dat, .ogg, .oga, .asn" multiple onchange="aarZip.loadFile(this.files)">
+			<br>
+
+			<label for="aarType">AAR Type</label>
+			<select id="aarType" onchange="storage.item(this); aarHide.classList[(this.value === 'Bgm') ? 'add' : 'remove']('active')">
+				<option value="Stage" selected>Stage</option>
+				<option value="Bgm">Bgm</option>
+			</select>
+			<br>
+			
+			<div id="aarHide" class="hide-content" style="height: 110px; --text: 'Cannot be changed in Bgm mode.'"></div>
+
+			<label for="aarID" title="Song ID of the song overwriting.&#013;E.g. if replacing No Way Out [93] with Phone Dead Room [179], set ID to 93.">Song ID</label>
+			<input id="aarID" type="number" min="1" max="999" onchange="storage.item(this)">
+			<br>
+			<br>
+
+			<label for="aarMuteSHOT" title="SHOT is an extra audio layer that gets muted when missing notes. &#013;Enabling this will mute all inputted SHOT audio files in the AAR.">Mute SHOT</label>
+			<input id="aarMuteSHOT" type="checkbox" onchange="storage.item(this)">
+			<br>
+
+			<label for="aarDLC" title="Changes song ID safeguards to better match DLC song IDs.">DLC</label>
+			<input id="aarDLC" type="checkbox" onchange="storage.item(this)">
+			<br>
+
+
+			<label for="aarDiffShift" title="Rename higher difficulty chart files so it overwrites the easier ones.&#013;E.g. if HARD selected, HARD will be placed in EASY's slot, and EXTRA will be placed in NORMAL's slot.">Difficulty Shift</label>
+			<select id="aarDiffShift" onchange="storage.item(this)">
+				<option value=0>EASY</option>
+				<option value=1>NORMAL</option>
+				<option value=2>HARD</option>
+				<option value=3>EXTRA</option>
+			</select>
+			--> EASY
+			<br>
+			<br>
+
+			<button onclick="downloadIfValid(aarZip.file)">Download</button>
+			<hr>
+
+			Files imported:
+			<br>
+			<textarea id="aarFileList" cols="30" readonly></textarea>
+		</div>
+
+		<!-- ================== -->
+		<!-- === TABLE TUNE === -->
+		<!-- ================== -->
+		<div>
+			<header>
+				<h2>Table Tune</h2>
+				Re-assign difficulties of existing songs in <code>TableTune.aar</code>.
+			</header>
+			<hr>
+
+			<span class="file-types"><code>TableTune.aar</code></span>
+
+			<input id="tuneState" type="checkbox" disabled>
+			<div class="file-drop" onclick="tuneFile.click()" ondragover="drag.drag(event, this)" ondragleave="drag.leave(this)" ondrop="drag.drop(event, this, tune, 'loadFile')">
+				<p></p><small>recommended: TableTune.aar</small>
+			</div>
+			<input id="tuneFile" type="file" accept=".aar" onchange="tune.loadFile(this.files)">
+			<br>
+			<br>
+
+			<div id="tuneHide" class="hide-content active" style="height: 164px; --text: 'Load file to access settings.'"></div>
+
+
+			<label for="tuneID">Song ID</label>
+			<input id="tuneID" type="number" min="1" max="999" onchange="storage.item(this)">
+			<br>
+
+			Difficulties
+			<br>
+			<input id="tuneE" type="number" min=0 max=15 value=0 onchange="storage.item(this)">
+			<input id="tuneN" type="number" min=0 max=15 value=0 onchange="storage.item(this)">
+			<input id="tuneH" type="number" min=0 max=15 value=0 onchange="storage.item(this)">
+			<input id="tuneX" type="number" min=0 max=15 value=0 onchange="storage.item(this)">
+			<br>
+			<br>
+
+			<button onclick="tune.find(true)">Find</button>
+			<button onclick="if (tune.findIndex === undefined) { tune.find(); } tune.replace()">Replace</button>
+			<br>
+			<br>
+			
+			<button onclick="tune.download()">Download</button>
+			<br>
+
+			<span id="tuneSaved" style="display: none">DATA IS NOT SAVED!</span>
+		</div>
+
+		<!-- ================ -->
+		<!-- === ASN SNIP === -->
+		<!-- ================ -->
+		<div>
+			<header>
+				<h2>ASN Snip</h2>
+				Converts <code>.asn</code> audio to <code>.ogg</code> by trimming header.
+			</header>
+			<hr>
+
+			<span class="file-types"><code>.asn</code> ⟹ <code>.ogg</code></span>
+
+			<div class="file-drop" onclick="asnFile.click()" ondragover="drag.drag(event, this)" ondragleave="drag.leave(this)" ondrop="drag.drop(event, this, asn, 'loadFile')">
+				<p></p><small>recommended: .asn</small>
+			</div>
+			<input id="asnFile" type="file" accept=".asn" multiple onchange="asn.loadFile(this.files)">
+			<br>
+			<br>
+
+			<button onclick="downloadIfValid(asn.file)">Download</button>
+
+			<hr>
+			Files imported:
+			<br>
+			<textarea id="asnFileList" cols="30" readonly></textarea>
+		</div>
+
+		<!-- ====================== -->
+		<!-- === JACKET CONVERT === -->
+		<!-- ====================== -->
+		<div>
 			<header>
 				<h2>Jacket Converter</h2>
 				Converts AC jackets to SW jackets
 			</header>
 			<hr>
 
-			<div class="file-drop" onclick="jcFile.click()" ondragover="fileDrag(event, this)" ondragleave="fileDragLeave(this)" ondrop="fileDrop(event, this, jacketConv)">
+			<div class="file-drop" onclick="jcFile.click()" ondragover="drag.drag(event, this)" ondragleave="drag.leave(this)" ondrop="drag.drop(event, this, jacketConv, 'loadFile')">
 				<p></p><small>recommended: images</small>
 			</div>
 			<input id="jcFile" type="file" accept="image/*" multiple onchange="jacketConv.loadFile(this.files)">
 			<br>
 
-			<input id="jcSetStretch" type="checkbox" checked onchange="jacketConv.master()">
 			<label for="jcSetStretch">Stretch image?</label>
+			<input id="jcSetStretch" type="checkbox" checked onchange="jacketConv.master(); storage.item(this)">
 			<br>
-			
+
 			<label for="jcACVer">AC Version</label>
-			<select id="jcACVer" onchange="jacketConv.master()">
+			<select id="jcACVer" onchange="jacketConv.master(); storage.item(this)">
 				<option value="AC2" selected>AC2</option>
 				<option value="AC4">AC4</option>
 			</select>
@@ -77,95 +216,16 @@
 			<canvas id="jcCanvas" style="display: none"></canvas>
 		</div>
 
-		<div id="idTabASN">
-			<header>
-				<h2>ASN Snip</h2>
-				Converts <code>.asn</code> audio to <code>.ogg</code> by trimming header.
-			</header>
-			<hr>
-
-			<span class="file-types"><code>.asn</code> ⟹ <code>.ogg</code></span>
-
-			<div class="file-drop" onclick="asnFile.click()" ondragover="fileDrag(event, this)" ondragleave="fileDragLeave(this)" ondrop="fileDrop(event, this, asn, true)">
-				<p></p><small>recommended: .asn</small>
-			</div>
-			<input id="asnFile" type="file" accept=".asn" multiple onchange="asn.loadFile(this.files)">
-			<br>
-			<br>
-
-			<button onclick="downloadIfValid(asn.file)">Download</button>
-
-			<hr>
-			Files imported:
-			<br>
-			<textarea id="asnFileList" cols="30" style="resize: vertical" readonly></textarea>
-			<br>
-			<br>
-			
-			<textarea id="asnHexIn" rows="3" cols="45" readonly></textarea>
-			<textarea id="asnTxtIn" rows="3" cols="45" readonly></textarea>
-			<br>
-
-			<textarea id="asnHexOut" rows="3" cols="45" readonly></textarea>
-			<textarea id="asnTxtOut" rows="3" cols="45" readonly></textarea>
-		</div>
-
-		<div id="idTabAARZip">
-			<header>
-				<h2>AAR Zip</h2>
-				Packs <code>.aar</code> archives
-			</header>
-			<hr>
-
-			<span class="file-types"><code>.*</code> ⟹ <code>.aar</code></span>
-
-			<div class="file-drop" onclick="aarFileZip.click()" ondragover="fileDrag(event, this)" ondragleave="fileDragLeave(this)" ondrop="fileDrop(event, this, aarZip)">
-				<p></p><small>recommended: .dat, .ogg, .asn</small>
-			</div>
-			<input id="aarFileZip" type="file" accept=".dat, .ogg, .oga, .asn" multiple onchange="aarZip.loadFile(this.files)">
-			<br>
-
-			<label for="aarType">AAR Type</label>
-			<select id="aarType">
-				<option value="Stage" selected>Stage</option>
-				<option value="Bgm">Bgm</option>
-			</select>
-			<br>
-
-			<label for="aarID" title="Song ID of the song overwriting. E.g. if replacing No Way Out [93] with 21124 [321], set ID to 93.">Song ID</label>
-			<input id="aarID" type="number" min="1" max="999">
-			<br>
-
-			<label for="aarMuteSHOT" title="SHOT is an extra audio layer that gets muted when missing notes. Enabling this will empty out all inputted SHOT audio files in the AAR.">Mute SHOT</label>
-			<input id="aarMuteSHOT" type="checkbox">
-			<br>
-			
-			<label for="aarDLC" title="Changes song ID safeguards to better match DLC song IDs.">DLC</label>
-			<input id="aarDLC" type="checkbox">
-			<br>
-			<br>
-
-			<button onclick="downloadIfValid(aarZip.file)">Download</button>
-			<hr>
-
-			Files imported:
-			<br>
-			<textarea id="aarFileList" cols="30" style="resize: vertical" readonly></textarea>
-			<br>
-			<br>
-
-			<textarea id="aarHex" rows="3" cols="45" readonly></textarea>
-			<textarea id="aarTxt" rows="3" cols="45" readonly></textarea>
-		</div>
-
-
-		<div id="idTabAbout">
+		<!-- ================= -->
+		<!-- === ABOUT MTC === -->
+		<!-- ================= -->
+		<div style="user-select: text">
 			<header>
 				<h2>About</h2>
 			</header>
 			<hr>
 
-			<b>Mod The Coaster</b> <a href="https://github.com/lemocha7/Mod-The-Coaster/releases/tag/v1.0.1">v1.0.1</a>
+			<b>Mod The Coaster</b> <a href="https://github.com/lemocha7/Mod-The-Coaster/releases/tag/v1.1">v1.1</a>
 			<br>
 
 			Groove Coaster modding utilities.
@@ -173,7 +233,7 @@
 			<br>
 
 			Using:
-			<a href="https://stuk.github.io/jszip/">JSZip</a> v3.10.1
+			<a href="https://stuk.github.io/jszip">JSZip</a> v3.10.1
 			<br>
 
 			♡ <a href="https://lemocha7.github.io">lemocha</a> 2024
@@ -183,14 +243,38 @@
 </body>
 
 <!-- libraries used -->
-<script src="https://lemocha7.github.io/lib/simFile-2024.2.19.js"></script>
+<script src="https://lemocha7.github.io/lib/simFile/2024.2.19.js"></script>
+<script src="https://lemocha7.github.io/lib/tabs/2024.11.15.js"</script>
 <script src="https://stuk.github.io/jszip/dist/jszip.js"></script>
 
 <!-- each tab has own JS file with functions -->
 <script src="script.js"></script>
-<script src="jacketConv.js"></script>
-<script src="asn.js"></script>
 <script src="aarZip.js"></script>
+<script src="tune.js"></script>
+<script src="asn.js"></script>
+<script src="jacketConv.js"></script>
+
+<script>
+	tabs.list.tab =
+	{
+		name: ["aarZip", "tune", "asn", "jacketConv", "about"],
+		container: document.getElementById("idMainContainer"),
+		buttons: idTabContainer.getElementsByTagName("button"),
+		storage: "mtc/last-tab",
+		default: 0,
+
+		// on click, add "active" class to both tab <button> and content <div>
+		fate: ["tabActive", "childActive"]
+	};
+	tabs.openStorage("tab");
+
+	// set each <input>s value to the one saved in local storage
+	storage.list = [aarType, aarID, aarMuteSHOT, aarDLC, aarDiffShift, jcSetStretch, jcACVer, tuneID, tuneE, tuneN, tuneH, tuneX];
+	storage.storage = "mtc/";
+	storage.load();
+
+	if (aarType.value === "Bgm") { aarHide.classList.add("active"); }
+</script>
 </html>
 
 

@@ -38,7 +38,7 @@ input, select, textarea
 }
 input[type=file] { display: none; }
 input[type=checkbox], select { cursor: pointer; }
-textarea { resize: none; }
+textarea { overflow: hidden; resize: none; }
 input, select { text-align: left; font-size: 11pt; }
 
 html { height: 100%; }
@@ -54,21 +54,32 @@ h2 { line-height: 0.8; }
 img { image-rendering: pixelated; user-select: none !important; }
 
 br { user-select: none; }
-header, #idTabAbout { user-select: text; }
+header { user-select: text; }
+
+#tuneState
+{
+	display: inline-block;
+	height: 0;
+	margin-right: -2px;
+	
+	cursor: default;
+}
+#tuneState::before { content: "X"; }
+#tuneState:checked::before { content: "✓"; }
 
 
 
 /* =============== */
 /* === CONTENT === */
 /* =============== */
-.main
+#idMainContainer
 {
 	height: -webkit-fill-available;
 	color: black; background-color: var(--white);
 	padding: 16px 0;
 }
-.main > div { display: none; }
-div.selected { display: block !important; text-align: -webkit-center; }
+#idMainContainer > div { display: none; }
+div.active { display: block !important; text-align: -webkit-center; }
 
 .layout
 {
@@ -90,6 +101,7 @@ div.selected { display: block !important; text-align: -webkit-center; }
 {
 	position: absolute;
 	left: 12px; top: 230px;
+	pointer-events: none;
 }
 
 label[title]
@@ -153,10 +165,10 @@ label[title]
 	background-color: var(--grey);
 	border: 0;
 	border-radius: 0;
-	
+
 	transition-duration: .04s;
 }
-#idTabContainer button.selected
+#idTabContainer button.active
 {
 	height: 44px;
 	background-color: var(--white);
@@ -166,7 +178,7 @@ label[title]
 	filter: brightness(90%);
 	height: 30px;
 }
-#idTabContainer button.selected:active { height: 40px !important; }
+#idTabContainer button.active:active { height: 40px !important; }
 
 .tag
 {
@@ -190,7 +202,7 @@ label[title]
 .tag button { pointer-events: auto; }
 
 /* move tab text up if first tab being open would cover it up */
-.tag:has(button:nth-of-type(1).selected) > span { top: -40px; }
+.tag:has(button:nth-of-type(1).active) > span { top: -40px; }
 
 
 
@@ -212,6 +224,30 @@ label[title]
 	text-align: left;
 }
 .link-header a { color: rgb(130, 200, 210); }
+
+
+.hide-content
+{
+	position: absolute;
+	width: 100%;
+	pointer-events: none;
+}
+.hide-content.active
+{
+	pointer-events: all;
+
+	background-color: rgb(0 0 0 / 75%);
+	/*box-shadow: 0 0 10px 20px rgb(0 0 0 / 75%);*/
+	box-shadow: 0 0 10px 4px rgb(0 0 0 / 75%);
+}
+.hide-content.active::before
+{
+	position: relative;
+	top: 40px;
+	content: var(--text);
+
+	color: var(--white);
+}
 
 
 

@@ -4,46 +4,46 @@
 // === TAB MANAGER ===
 // ===================
 // DOM of all tab buttons
-const tabButtons = idTabContainer.getElementsByTagName("button");
-const tab =
-{
-	active: 1,
-	list: ["about", "jacketConv", undefined, undefined, "asn", "aarZip"],
+// const tabButtons = idTabContainer.getElementsByTagName("button");
+// const tab =
+// {
+// 	active: 1,
+// 	list: ["about", "jacketConv", undefined, undefined, "asn", "aarZip"],
 
-	// list of all tab <div>
-	DOM:
-	{
-		about: document.getElementById("idTabAbout"),
-		jacketConv: document.getElementById("idTabJacketConv"),
-		asn: document.getElementById("idTabASN"),
-		aarZip: document.getElementById("idTabAARZip")
-	},
-	// list of all tab <button> in tab container
-	buttons:
-	{
-		about: tabButtons[3],
-		jacketConv: tabButtons[0],
-		asn: tabButtons[2],
-		aarZip: tabButtons[1],
-	},
+// 	// list of all tab <div>
+// 	DOM:
+// 	{
+// 		about: document.getElementById("idTabAbout"),
+// 		jacketConv: document.getElementById("idTabJacketConv"),
+// 		asn: document.getElementById("idTabASN"),
+// 		aarZip: document.getElementById("idTabAARZip")
+// 	},
+// 	// list of all tab <button> in tab container
+// 	buttons:
+// 	{
+// 		about: tabButtons[3],
+// 		jacketConv: tabButtons[0],
+// 		asn: tabButtons[2],
+// 		aarZip: tabButtons[1],
+// 	},
 
 
-	// open tab, set <div> and <button> as classes
-	//	id [int]:				ID of tab to open
-	open: function(id)
-	{
-		if (id !== this.active)
-		{
-			this.DOM[this.list[id]].classList.add("selected");
-			this.DOM[this.list[this.active]].classList.remove("selected");
-			this.buttons[this.list[id]].classList.add("selected");
-			this.buttons[this.list[this.active]].classList.remove("selected");
+// 	// open tab, set <div> and <button> as classes
+// 	//	id [int]:				ID of tab to open
+// 	open: function(id)
+// 	{
+// 		if (id !== this.active)
+// 		{
+// 			this.DOM[this.list[id]].classList.add("selected");
+// 			this.DOM[this.list[this.active]].classList.remove("selected");
+// 			this.buttons[this.list[id]].classList.add("selected");
+// 			this.buttons[this.list[this.active]].classList.remove("selected");
 
-			this.active = id;
-			localStorage.setItem("mtc/last-tab", id);
-		}
-	}
-};
+// 			this.active = id;
+// 			localStorage.setItem("mtc/last-tab", id);
+// 		}
+// 	}
+// };
 
 // ========================
 // === JACKET CONSTANTS ===
@@ -96,30 +96,9 @@ const jacket =
 // ======================
 // === MISC FUNCTIONS ===
 // ======================
-// convert DECIMAL to HEX, flip order of byte chunks (e.g. 12 34 56 ==> 56 34 12)
-//	input [int]:			decimal to convert
-//	l [int]:					how many bytes HEX should be
-//	hex [arr]:				array to push to
-function hexReverseChunk(input, l, hex)
-{
-	// offset in aar has the order of bytes backwards
-	// convert offset to HEX and reverse the string
-	// e.g. 12 34 56 ==> 65 43 21
-	let str = input.toString(16).split("").reverse().join("");
 
-	// make string always L bytes long
-	if (str.length !== l)
-	{
-		str += "0".repeat(l - str.length);
-	}
+// hexReverseChunk function moved to aarZip.js
 
-	// swap bytes with the one next to it, convert HEX back to DECIMAL
-	// e.g. 65 43 21 ==> 56 34 12
-	for (let i = 0; i < l; i += 2)
-	{
-		hex.push(parseInt(str[i + 1] + str[i], 16));
-	}
-}
 function downloadIfValid(file)
 {
 	if (file[0] !== undefined)
@@ -129,53 +108,7 @@ function downloadIfValid(file)
 }
 
 
-// =====================
-// === LOCAL STORAGE ===
-// =====================
-// if local storage is enabled, key in local storage is not empty, and key is not 1
-if (navigator.cookieEnabled && localStorage.getItem("mtc/last-tab") !== null && localStorage.getItem("mtc/last-tab") !== "1")
-{
-	// open the tab ID that was set in local storage
-	tab.open(Number(localStorage.getItem("mtc/last-tab")));
-}
-else
-{
-	// select first tab to be active
-	tab.DOM[tab.list[tab.active]].classList.add("selected");
-	tab.buttons[tab.list[tab.active]].classList.add("selected");
-}
-
-
-// =================
-// === FILE DRAG ===
-// =================
-// tied to "ondragover" event. set drop visuals, add "drag" class
-//	event [event]:		drag / drop event
-//	dom [dom]:				DOM of file-area
-function fileDrag(event, dom)
-{
-	event.stopPropagation();
-	event.preventDefault();
-	event.dataTransfer.dropEffect = "copy";
-
-	dom.classList.add("drag");
-}
-// tied to "ondragleave" event. remove "drag" class
-//	dom [dom]:				DOM of file-area
-function fileDragLeave(dom) { dom.classList.remove("drag"); }
-
-// tied to "ondrop" event. remove drop visuals, run loadFile() on specified object
-//	event [event]:		drag / drop event
-//	dom [dom]:				DOM of file-area
-//	dest [obj]:				loadFile() under whichever object specified (e.g. "aarZip")
-function fileDrop(event, dom, dest)
-{
-	event.stopPropagation();
-	event.preventDefault();
-	dest.loadFile(event.dataTransfer.files);
-
-	dom.classList.remove("drag");
-}
+// file area functions moved to tabs.js
 
 
 

@@ -41,44 +41,6 @@ const asn =
 				// add file name to <textarea>
 				asnFileList.value += files[i].name;
 				if (i !== l - 1) { asnFileList.value += "\n"; }
-
-
-				if (i === 0)
-				{
-					// hex display
-					asnTxtIn.value = ""; asnHexIn.value = "";
-					asnTxtOut.value = ""; asnHexOut.value = "";
-
-					const hexRun = (offset, txt, hex) =>
-					{
-						if (16 > viewer[offset])
-						{
-							hex.value += "0";
-						}
-
-						// DECIMAL -> ASCII
-						txt.value += String.fromCharCode(viewer[offset]);
-						txt.value += " ";
-
-						// DECIMAL -> HEX
-						hex.value += viewer[offset].toString(16).toUpperCase();
-						hex.value += " ";
-
-						if (offset === 15 || offset === 31)
-						{
-							txt.value += "\n";
-							hex.value += "\n";
-						}
-					};
-					for (let i = 0; i < 48; i++)
-					{
-						hexRun(i, asnTxtIn, asnHexIn);
-					}
-					for (let i = 32; i < 80; i++)
-					{
-						hexRun(i, asnTxtOut, asnHexOut);
-					}
-				}
 			}
 			// OggS
 			//else if (magic === "79 103 103 83")
@@ -90,7 +52,7 @@ const asn =
 				alert("Hmm... The file you entered doesn't seem to be an ASN file. Try another file or check the magic header.");
 			}
 		}
-		
+
 		if (l !== 1)
 		{
 			this.file = [await zip.generateAsync({ type:"blob" }), "asnSnip.zip", "application/zip"];
