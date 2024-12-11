@@ -1,5 +1,6 @@
 # ![](img/icon.webp) Mod The Coaster
 *Groove Coaster modding utilities.*
+
 [modding guide](https://github.com/lemocha7/Mod-The-Coaster/wiki) · [song list spreadsheet](https://docs.google.com/spreadsheets/d/1Ia1Pj9P0OHSlMKTNB8HuUs1qk7ODr7MGuCyzzunbAZk)
 
 
@@ -43,7 +44,9 @@ However, these functions will not work unless hosted on a local webserver.
 
 ## Dependencies
 [JSZip](https://stuk.github.io/jszip) v3.10.1
+
 [simFile](https://lemocha7.github.io/lib/simFile/2024.2.19.js) v2024.2.19
+
 [tabs](https://lemocha7.github.io/lib/tabs/2024.11.15.js) v2024.11.15
 
 
