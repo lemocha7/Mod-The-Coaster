@@ -33,7 +33,7 @@ const aarZip =
 	file: [undefined, undefined, undefined],
 
 	// order that SHOT audio is stored
-	shotOrder: ["e", "ne", "n", "h", "hn", "xh", "nx", "shot", "x"],
+	shotOrder: ["e","ne","n","h","hn","hne","xh","nx","shot","x"],
 
 
 	// order that files are laid out in AAR. FILE ORDER IS IMPORTANT!!!
@@ -63,6 +63,7 @@ const aarZip =
 							[ "_h_SHOT.asn", -4,  "_h_SHOT.ogg"],
 							// priorities unknown
 							["_hn_SHOT.asn", -5, "_hn_SHOT.ogg"],  // used by 17 songs (in 4MAX)
+							["_hne_SHOT.asn",-5,"_hne_SHOT.ogg"],  // used by  5 songs (in 4MAX)
 							["_xh_SHOT.asn", -5, "_xh_SHOT.ogg"],  // used only by cinder & bb2-hz
 							["_nx_SHOT.asn", -5, "_nx_SHOT.ogg"],  // used only by uraomote2
 
@@ -133,7 +134,7 @@ const aarZip =
 					fileNameBack = files[i].name;
 				}
 
-				for (let x = 0; x < 27; x++)
+				for (let x = 0; x < 28; x++)
 				{
 					// check if file name matches
 					if (fileNameBack.endsWith(this.stageOrder[x][0]))
@@ -154,7 +155,7 @@ const aarZip =
 					}
 
 					// check if BGM or SHOT is lowercase
-					else if ((x === 1 || x > 18) && fileNameBack.endsWith(this.stageOrder[x][2].toLowerCase()))
+					else if ((x === 1 || x > 17) && fileNameBack.endsWith(this.stageOrder[x][2].toLowerCase()))
 					{
 						success = true;
 					}
@@ -262,10 +263,11 @@ const aarZip =
 								case 20: shotList.push(["n",   i]); break;
 								case 21: shotList.push(["h",   i]); break;
 								case 22: shotList.push(["hn",  i]); break;
-								case 23: shotList.push(["xh",  i]); break;
-								case 24: shotList.push(["nx",  i]); break;
-								case 25: shotList.push(["x",   i]); break;
-								case 26: shotList.push(["shot",i]); break;
+								case 23: shotList.push(["hne", i]); break;
+								case 24: shotList.push(["xh",  i]); break;
+								case 25: shotList.push(["nx",  i]); break;
+								case 26: shotList.push(["x",   i]); break;
+								case 27: shotList.push(["shot",i]); break;
 							}
 
 							// break from loop
@@ -335,7 +337,7 @@ const aarZip =
 			// for each shot type...
 			let shotCount = 0;
 			const l = shotList.length;
-			for (let x = 0; x < 9; x++)
+			for (let x = 0; x < 10; x++)
 			{
 				// go through each shot file and find one that matches type
 				for (let i = 0; i < l; i++)

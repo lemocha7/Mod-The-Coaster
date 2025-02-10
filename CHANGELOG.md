@@ -4,6 +4,8 @@ This release adds support for file names over 32 characters, along with some mis
 **AAR Zip**
 - **now supports file names over 32 characters long** (~6 charts affected)
 - file list <textarea> will set its with to fit the longest line if over the default width
+- **v1.1.1.1**: lowercase "e_shot" should now be recognized
+- **v1.1.1.1**: added support for "hne" SHOT file (~5 charts affected)
 
 **General**
 - instead of validating IDs based on range, AAR Zip & TableTune will now check a list of IDs used by ST instead.
@@ -25,7 +27,6 @@ This release adds a **Table Tune** tab, **difficulty shifting** (and other chang
 - **will now detect SW chart files and lowercase BGM / SHOT files**
 - option to download a blank shot file if none is found (I cannot automatically plug-in a blank shot in this case without a major code rewrite)
 - EMPTY.ogg is now smaller (3.47 KB --> 2.59 KB)
-
 - will now support 5 SHOT files at once instead of 4 (to my knowledge only `HATSUNE MIKU no BOUSOU` has this, which crashes on ST)
 - will now block out other settings when setting AAR Type to `Bgm`
 - added line breaks to settings help text
