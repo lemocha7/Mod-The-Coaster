@@ -8,6 +8,10 @@
 ## AAR Zip
 Packs `.aar` archives. ST stores most of its files (including charts) in `.aar` files.
 
+|AC                |APP|ST|SW                                      |
+|------------------|---|--|-----------------------------------------|
+|🟡 (no 4MAX songs)|?  |✅|🟡 (charts already in AC, no MAS charts)|
+
 |List                                    |Unpacked                                  |
 |----------------------------------------|------------------------------------------|
 |![ST Install](guide-img/st-install.webp)|![AAR unpacked](guide-img/aar-unpack.webp)|
@@ -52,4 +56,4 @@ However, these functions will not work unless hosted on a local webserver.
 
 ##
 
-Mod The Coaster ♡ [lemocha](https://lemocha7.github.io) 2024
+Mod The Coaster ♡ [lemocha](https://lemocha7.github.io) 2024 - 2025

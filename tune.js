@@ -28,7 +28,7 @@ const tune =
 				// hooray! it passed the check!
 				success = true;
 			}
-			//else, if magic bytes spell "ALLZ"
+			// else, if magic bytes spell "ALLZ"
 			else if (this.viewer[2] === 76 && this.viewer[3] === 90)
 			{
 				alert("Hey, so... It appears like the TableTune file is currently compressed with ALLZ. Run \"Aqualead_LZSS\" on the file and input it again.");
@@ -178,6 +178,15 @@ const tune =
 		// if the ID was found already
 		if (this.index !== -1)
 		{
+			// throw error if song ID isn't tied to any valid ST ID.
+			if (!STList.includes(Number(tuneID.value)))
+			{
+				if (!confirm("Hmm... The song ID doesn't seem to be tied to any song in ST.\n\nContinue anyways?"))
+				{
+					return;
+				}
+			}
+
 			let count = 0;
 			if (this.viewer[this.index + 32] !== Number(tuneE.value))
 			{

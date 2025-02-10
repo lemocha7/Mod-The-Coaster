@@ -1,6 +1,5 @@
 "use strict";
 
-
 // FUNCTION MOVED HERE FOR GRUCO MANAGER COMPATIBILITY
 // convert DECIMAL to HEX, flip order of byte chunks (e.g. 12 34 56 ==> 56 34 12)
 //	input [int]:			decimal to convert
@@ -114,15 +113,7 @@ const aarZip =
 				{
 					alert("Hey! Song ID is invalid. Set the ID to the song you're replacing in the base game.");
 
-					aarID.value = "";
-					return;
-				}
-			}
-			// if song ID not between 21 and 764 (min / max used by ST and its DLC)
-			else if ((aarID.value) < 20 || Number(aarID.value) > 764)
-			{
-				if (!confirm("Just letting you know, the song ID you entered (" + Number(aarID.value) + ") is out of range. ST only uses 21 - 764. Remember! The song ID should be set to the song you're replacing in the base game, NOT the song you're adding.\n\nContinue anyways?"))
-				{
+					aarID.value = 0;
 					return;
 				}
 			}
@@ -155,11 +146,11 @@ const aarZip =
 						success = true;
 
 						// if not BGM or SHOT
-						//if (x !== 1 && x < 18)
-						//{
-						//	// convert SW name to ST
-						//	fileNames[i] = fileNameBack.replace("_1", "").replace("_2", "").replace("mas", "ex");
-						//}
+						if (x !== 1 && x < 18)
+						{
+							// convert SW name to ST
+							fileNames[i] = fileNameBack.replace("_1", "").replace("_2", "").replace("mas", "ex");
+						}
 					}
 
 					// check if BGM or SHOT is lowercase
@@ -179,14 +170,12 @@ const aarZip =
 								{
 									// EASY
 									case 0: case 2: case 4:
-										//console.log(x);
 										switch (aarDiffShift.value)
 										{
 											// NORMAL	--> EASY
 											// HARD		--> EASY
 											// EXTRA	--> EASY
 											case "1": case "2": case "3":
-												//console.log("EASY CANCELLED");
 												success = false;
 												break;
 										}
@@ -198,14 +187,12 @@ const aarZip =
 										{
 											// NORMAL	--> EASY
 											case "1":
-												//console.log("NORMAL --> EASY");
 												x = this.diffSlots[0][(x - 7) / 2];
 												break;
 
 											// HARD		--> NORMAL
 											// EXTRA	--> NORMAL
 											case "2": case "3":
-												//console.log("NORMAL CANCELLED");
 												success = false;
 												break;
 										}
@@ -219,14 +206,12 @@ const aarZip =
 										}
 										else
 										{
-											//console.log("HARD", 2 - Number(aarDiffShift.value));
 											x = this.diffSlots[2 - Number(aarDiffShift.value)][x - 12];
 										}
 										break;
 
 									// EXTRA
 									case 15: case 16: case 17:
-										//console.log(x, x - 14);
 										x = this.diffSlots[3 - aarDiffShift.value][x - 15];
 										break;
 								}
@@ -234,7 +219,6 @@ const aarZip =
 
 							if (success)
 							{
-								//console.log(x, this.stageOrder[x]);
 								fileReadOrder[x] = i;
 								fileType[x] = this.stageOrder[x][1];
 							}
@@ -244,7 +228,6 @@ const aarZip =
 						if (success)
 						{
 							if (fileNames[i] === undefined) { fileNames[i] = fileNameBack; }
-							//console.log(fileNames[i]);
 
 							switch (x)
 							{
@@ -274,11 +257,6 @@ const aarZip =
 								// ex.dat
 								case 15: this.extra = true; break;
 
-								//case 18: if (aarDiffShift.value === "0")	{ shotList.push(["e",   i]); } break;
-								//case 19: if (aarDiffShift.value < 2)			{ shotList.push(["ne",  i]); } break;
-								//case 20: if (aarDiffShift.value < 2)			{ shotList.push(["n",   i]); } break;
-								//case 21: if (aarDiffShift.value !== "3")	{ shotList.push(["h",   i]); } break;
-								//case 22: if (aarDiffShift.value !== "3")	{ shotList.push(["hn",  i]); } break;
 								case 18: shotList.push(["e",   i]); break;
 								case 19: shotList.push(["ne",  i]); break;
 								case 20: shotList.push(["n",   i]); break;
@@ -304,13 +282,24 @@ const aarZip =
 				}
 			}
 
+			
+			// throw error if song ID isn't tied to any valid ST ID.
+			if (!STList.includes(Number(aarID.value)))
+			{
+				if (!confirm("Hmm... The song ID doesn't seem to be tied to any song in ST.\n\nContinue anyways?"))
+				{
+					return;
+				}
+			}
+			
+			// throw error if difficulty shift was set to extra when there is no extra
 			if (!this.extra && aarDiffShift.value === "3")
 			{
 				alert("ERROR: Difficulty Shift was set to EXTRA even though no EXTRA chart files were provided. EXITING!");
 				return;
 			}
 
-			// throw errors if no BGM or SHOTs were provided.
+			// throw error if no BGM or SHOT audio files were provided.
 			if (fileReadOrder[1] === undefined)
 			{
 				alert('Hey! You didn\'t specify a BGM file!\nIf it didn\'t get detected, make sure the file name follows this format:\n"bgm_b-###_name_BGM"');
@@ -318,30 +307,11 @@ const aarZip =
 			}
 			if (shotList[0] === undefined)
 			{
-				//alert('Hey! You didn\'t specify any SHOT files!\nIf it didn\'t get detected, make sure the file name follows this format:\n"bgm_b-###_name_SHOT" or "bgm_b-###_name_#_SHOT"');
 				if (confirm("Hey! You didn\'t specify any SHOT files!\nWould you like to download an empty one?"))
 				{
-					//console.log(files[fileReadOrder[1]].name);
 					simFile.download(await fetch("EMPTY.ogg").then(x => x.blob()), files[fileReadOrder[1]].name.slice(0, -7) + "SHOT.ogg", "audio/ogg")
 				}
-
-				// [TO-DO: give prompt for SHOT faking]
-				//hex[6]++;
-				//fileReadOrder[-1] = -1;
-				//gcman = true;
-				//fileNames[-1] = "SHOT.ogg"
-				//console.log(files, fileNames, shotList);
-				////const l = files.length;
-				//const fileBack = files;
-				//fileBack.push(await fetch("EMPTY.ogg").then(x => x.blob()))
-				//fileBack.push.apply(fileBack, files);
-
-				//shotList[0] = ["shot", -1];
 				
-				//console.log(files, fileNames, shotList);
-				//files[l];
-				//return;
-
 				return;
 			}
 
@@ -419,66 +389,42 @@ const aarZip =
 		{
 			aarFileList.value = "";
 		}
+		aarFileList.cols = 30;
+
 
 		// generate header
 		let headerOffset = 0;
-
 		const l = fileReadOrder.length;
-		//if (shotList[0] === undefined) { l++; }
 
 		for (let i = 0; i < l; i++)
 		{
 			// if file does not belong in AAR...
-			//let success = true;
 			if (fileReadOrder[i] === undefined)
 			{
-				
-				//console.log(shotList, i, l);
-				//if (shotList[0] === undefined && i === l - 1)
-				//{
-				//	console.log("BONUS???");
-					
-				//	fileNames[i] = "SHOT.ogg";
-				//	fileViewer[i] = await fetch("EMPTY.ogg").then(x => x.arrayBuffer()).then(x => new Uint8Array(x));
-				//	simFile.fileName = "SHOT";
-				//	simFile.fileExtension = "ogg";
-
-				//	console.log(fileViewer[i]);
-				//}
-				//else
-				//{
-					// create dummy file hex (will always be skipped)
 					fileViewer.push(undefined);
-					//success = false;
-				//}
 			}
 			// else, if file belongs in AAR...
 			else
-			//if (success)
 			{
-				//if (fileViewer[i] === undefined)
-				//{
-					// convert file to viewer, then store viewer to array
-					if (!gcman)
-					{
-						fileViewer.push(new Uint8Array(await simFile.read(files[fileReadOrder[i]], "readAsArrayBuffer")));
-					}
-					else
-					{
-						fileViewer.push(new Uint8Array(files[fileReadOrder[i]]));
-	
-						simFile.fileName = gcmanNames[fileReadOrder[i]].split(".")[0];
-						simFile.fileExtension = gcmanNames[fileReadOrder[i]].split(".")[1];
-					}
-	
-	
-					// if file is SHOT audio, replace to muted file if option is checked
-					if (aarMuteSHOT.checked && simFile.fileName.endsWith("_SHOT"))
-					{
-						fileViewer[i] = await fetch("EMPTY.ogg").then(x => x.arrayBuffer()).then(x => new Uint8Array(x));
-					}
-				//}
-				//console.log(simFile.fileName);
+				// convert file to viewer, then store viewer to array
+				if (!gcman)
+				{
+					fileViewer.push(new Uint8Array(await simFile.read(files[fileReadOrder[i]], "readAsArrayBuffer")));
+				}
+				else
+				{
+					fileViewer.push(new Uint8Array(files[fileReadOrder[i]]));
+
+					simFile.fileName = gcmanNames[fileReadOrder[i]].split(".")[0];
+					simFile.fileExtension = gcmanNames[fileReadOrder[i]].split(".")[1];
+				}
+
+
+				// if file is SHOT audio, replace to muted file if option is checked
+				if (aarMuteSHOT.checked && simFile.fileName.endsWith("_SHOT"))
+				{
+					fileViewer[i] = await fetch("EMPTY.ogg").then(x => x.arrayBuffer()).then(x => new Uint8Array(x));
+				}
 
 
 				// copy ID from header
@@ -503,7 +449,13 @@ const aarZip =
 				if (!gcman)
 				{
 					aarFileList.value += fileNames[fileReadOrder[i]];
-					if (i !== filesAmount - 1) { aarFileList.value += "\n"; }
+					aarFileList.value += "\n";
+
+					// if file name is too long, increase width to fit it
+					if (fileNames[fileReadOrder[i]].length > aarFileList.cols)
+					{
+						aarFileList.cols = fileNames[fileReadOrder[i]].length;
+					}
 				}
 
 				// get offset
@@ -533,16 +485,18 @@ const aarZip =
 			{
 				hex.push(0x00, 0x00);
 
+				// if file name is over 32 characters
+				if (fileNames[fileReadOrder[i]].length > 32)
+				{
+					// trim extra characters, even if that removes file extension
+					// yes this is how the official charts do this (nightofbutaotome)
+					fileNames[fileReadOrder[i]] = fileNames[fileReadOrder[i]].slice(0,32);
+				}
+
 				// FILE NAME HEADER
 				let arr = fileNames[fileReadOrder[i]].split("");
 				arr.forEach((currentValue, index) => arr[index] = currentValue.charCodeAt(0));
 				hex.push(...arr);
-
-				if (fileNames[fileReadOrder[i]].length > 32)
-				{
-					alert('Hey! "' + fileNames[fileReadOrder[i]] + '" is too long of a file name! It has to be 32 characters or under.');
-					return;
-				}
 
 				// file name always takes up 32 bytes
 				// fill with 0 if missing length

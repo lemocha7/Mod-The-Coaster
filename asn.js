@@ -42,11 +42,6 @@ const asn =
 				asnFileList.value += files[i].name;
 				if (i !== l - 1) { asnFileList.value += "\n"; }
 			}
-			// OggS
-			//else if (magic === "79 103 103 83")
-			//{
-
-			//}
 			else if (l === 1)
 			{
 				alert("Hmm... The file you entered doesn't seem to be an ASN file. Try another file or check the magic header.");

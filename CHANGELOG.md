@@ -1,3 +1,15 @@
+# v1.1.1 - Fix for long file names
+This release adds support for file names over 32 characters, along with some misc fixes.
+
+**AAR Zip**
+- **now supports file names over 32 characters long** (~6 charts affected)
+- file list <textarea> will set its with to fit the longest line if over the default width
+
+**General**
+- instead of validating IDs based on range, AAR Zip & TableTune will now check a list of IDs used by ST instead.
+- README now specifies supported chart types in AAR Zip
+
+
 # v1.1 - TableTune tab + AAR Difficulty Shifting + Song Spreadsheet + Modding Guide
 This release adds a **Table Tune** tab, **difficulty shifting** (and other changes) to AAR Zip, a link to my new [song list spreadsheet](https://docs.google.com/spreadsheets/d/1Ia1Pj9P0OHSlMKTNB8HuUs1qk7ODr7MGuCyzzunbAZk), and a link to my (work in progress) [modding guide](https://github.com/lemocha7/Mod-The-Coaster/wiki).
 

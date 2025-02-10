@@ -1,50 +1,5 @@
 "use strict";
 
-// ===================
-// === TAB MANAGER ===
-// ===================
-// DOM of all tab buttons
-// const tabButtons = idTabContainer.getElementsByTagName("button");
-// const tab =
-// {
-// 	active: 1,
-// 	list: ["about", "jacketConv", undefined, undefined, "asn", "aarZip"],
-
-// 	// list of all tab <div>
-// 	DOM:
-// 	{
-// 		about: document.getElementById("idTabAbout"),
-// 		jacketConv: document.getElementById("idTabJacketConv"),
-// 		asn: document.getElementById("idTabASN"),
-// 		aarZip: document.getElementById("idTabAARZip")
-// 	},
-// 	// list of all tab <button> in tab container
-// 	buttons:
-// 	{
-// 		about: tabButtons[3],
-// 		jacketConv: tabButtons[0],
-// 		asn: tabButtons[2],
-// 		aarZip: tabButtons[1],
-// 	},
-
-
-// 	// open tab, set <div> and <button> as classes
-// 	//	id [int]:				ID of tab to open
-// 	open: function(id)
-// 	{
-// 		if (id !== this.active)
-// 		{
-// 			this.DOM[this.list[id]].classList.add("selected");
-// 			this.DOM[this.list[this.active]].classList.remove("selected");
-// 			this.buttons[this.list[id]].classList.add("selected");
-// 			this.buttons[this.list[this.active]].classList.remove("selected");
-
-// 			this.active = id;
-// 			localStorage.setItem("mtc/last-tab", id);
-// 		}
-// 	}
-// };
-
 // ========================
 // === JACKET CONSTANTS ===
 // ========================
@@ -85,12 +40,31 @@ const jacket =
 
 		titleMenu: { x:6, y:368 },
 		titleMenuCenter: { x:70, y:404 },
-		titleGame: { x:6, y:337 },  // , w:327, h:25
+		titleGame: { x:6, y:337 },
 		titleSmall: { x:343, y:299, w:106, h:11 },
 		artist: { x:6, y:439 },
 		source: { x:7, y:466 }
 	}
 };
+
+
+// LIST OF ALL SONGS IN ST (total: 165)
+const STList = [
+// BASE GAME
+ 21, 43, 44, 47, 48, 52, 53, 92, 93, 99,114,115,117,119,122,148,
+192,198,201,275,344,345,347,353,372,378,380,381,382,383,387,388,
+390,421,474,476,512,560,567,568,569,595,596,624,625,626,670,671,672,
+ 28,272,623,705,720,	// UPDATE
+379,475,510,542,			// LOCKED
+950,951,999,					// CREDITS / TUTORIAL
+// DLC
+ 23, 38, 41, 45, 49, 51, 55, 56, 57, 89,116,124,159,184,200,255,
+256,257,266,267,271,274,276,280,298,311,312,313,356,357,365,368,370,
+373,374,389,395,396,397,413,422,423,479,480,493,494,517,518,520,522,
+548,554,558,570,574,576,587,592,594,597,605,607,609,610,629,632,640,
+643,666,667,669,675,679,682,684,698,699,701,707,711,712,713,714,715,
+716,717,721,722,723,724,725,734,735,737,738,739,741,743,751,759,761,
+762,763,764];
 
 
 // ======================
@@ -106,9 +80,6 @@ function downloadIfValid(file)
 		simFile.download(...file);
 	}
 }
-
-
-// file area functions moved to tabs.js
 
 
 
